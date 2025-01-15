@@ -11,6 +11,7 @@ import SDWebImageSwiftUI
 struct SuperheroSearch: View {
     @State var superheroName:String = ""
     @State var wrapper:ApiNetwork.Wrapper? = nil
+    @State var loading:Bool = false
     
     var body: some View {
         VStack{
@@ -32,6 +33,7 @@ struct SuperheroSearch: View {
             .autocorrectionDisabled()
             //When pressed enter than it will display the result
             .onSubmit {
+                loading = true
                 print(superheroName)
                 Task{
                     do{
@@ -39,10 +41,21 @@ struct SuperheroSearch: View {
                     }catch{
                         print(error.localizedDescription)
                     }
+                    loading = false
+                }
+                if loading{
+                    ProgressView().tint(.white)
                 }
             }
-            List(wrapper?.results ?? []){ superhero in SuperheroItem(superhero: superhero)
-            }.listStyle(.plain)
+            NavigationStack{
+                List(wrapper?.results ?? []){ superhero in
+                    ZStack{
+                        SuperheroItem(superhero: superhero)
+                        NavigationLink(destination: {}){EmptyView().opacity(0)}
+                    }.listRowBackground(
+                        Color.backgroundApp)
+                }.listStyle(.plain)
+            }
             Spacer()
         }.frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.backgroundApp)
@@ -53,7 +66,6 @@ struct SuperheroItem:View{
     let superhero:ApiNetwork.Superhero
     var body: some View{
         ZStack{
-//            superhero.image.url
             WebImage(url: URL(string: superhero.image.url))
                 .resizable()
                 .indicator(.activity) //while loading image, show indication of loading
@@ -69,8 +81,7 @@ struct SuperheroItem:View{
                     .background(.white.opacity(0.5))
                 
             }
-        }.frame(height: 200).cornerRadius(32).listRowBackground(
-            Color.backgroundApp)
+        }.frame(height: 200).cornerRadius(32)
     }
 }
 
