@@ -49,9 +49,10 @@ struct SuperheroSearch: View {
             }
             NavigationStack{
                 List(wrapper?.results ?? []){ superhero in
+                    //Showed the list this way in order to hide the arrow that is displayed automatically on a Nav Stack
                     ZStack{
                         SuperheroItem(superhero: superhero)
-                        NavigationLink(destination: {}){EmptyView().opacity(0)}
+                        NavigationLink(destination: SuperheroDetail(id: superhero.id)){EmptyView().opacity(0)}
                     }.listRowBackground(
                         Color.backgroundApp)
                 }.listStyle(.plain)
