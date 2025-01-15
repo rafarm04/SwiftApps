@@ -6,6 +6,7 @@
 //
 //94e3ff11bdafa56b70dd233885a159e9
 import SwiftUI
+import SDWebImageSwiftUI
 
 struct SuperheroSearch: View {
     @State var superheroName:String = ""
@@ -52,7 +53,12 @@ struct SuperheroItem:View{
     let superhero:ApiNetwork.Superhero
     var body: some View{
         ZStack{
-            Rectangle()
+//            superhero.image.url
+            WebImage(url: URL(string: superhero.image.url))
+                .resizable()
+                .indicator(.activity) //while loading image, show indication of loading
+                .scaledToFill()
+                .frame(height: 200)
             VStack{
                 Spacer()
                 Text("\(superhero.name)").foregroundColor(.white)
@@ -69,5 +75,5 @@ struct SuperheroItem:View{
 }
 
 #Preview {
-    SuperheroItem(superhero: ApiNetwork.Superhero(id:"", name:"alskdjbc"))
+    SuperheroSearch()
 }
